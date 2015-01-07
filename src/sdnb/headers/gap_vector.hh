@@ -307,7 +307,7 @@ namespace SDNB
                 __gapEnd = vectorLength - frontVectorLength;
 
                 typename std::vector<T>::iterator tempGapEnd = __data.end() - frontVectorLength;
-                copy(gap(), gap() + frontVectorLength, tempGapEnd);
+                copy(gap(), gap() + frontVectorLength, tempGapEnd); /* need to change this */
                 __gapEnd = __data.size() - frontVectorLength;
                 return;
             };
@@ -332,7 +332,7 @@ namespace SDNB
                 __data.resize(size + newGapLength);
                 __gapBegin = backVectorLength;
                 __gapEnd = __data.size() - frontVectorLength;
-                copy(frontVector->begin(), frontVector->begin() + frontVectorLength, gap());
+                copy(frontVector->begin(), frontVector->begin() + frontVectorLength, gap()); /* need to change this */
                 delete frontVector;
                 return;
             };
