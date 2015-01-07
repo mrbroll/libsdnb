@@ -1,0 +1,80 @@
+apply plugin: 'cpp'
+
+def gtestBuild = new File('./deps/gtest/lib/libgtest.a')
+
+task depGtest << {
+    if (!gtestBuild.exists()) {
+        def buildScript = 'deps/gtest/build.sh'
+        if (System.properties['os.name'].toLowerCase().contains('windows')) {
+            buildScript = 'deps/gtest/build.ps1'
+        }
+        def buildProc = new File(buildScript).getAbsolutePath().execute()
+        println "${buildProc.text}"
+    }
+}
+
+task deps {
+    dependsOn depGtest
+}
+
+model {
+    buildTypes {
+        debug
+        release
+    }
+    repositories {
+        libs (PrebuiltLibraries) {
+            gtest {
+                headers.srcDir './deps/gtest/include'
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile  = file('./deps/gtest/lib/libgtest.a')
+                }
+            }
+        }
+    }
+}
+
+binaries.all {
+    cppCompiler.args '-std=c++11'
+    if (buildType == buildTypes.debug) {
+        cppCompiler.args '-g'
+    }
+}
+
+executables {
+    test {
+        binaries.all {
+            lib library: 'gtest', linkage: 'static'
+            tasks.withType(CppCompile) {
+                dependsOn depGtest
+            }
+            tasks.withType(LinkExecutable) {
+                doLast {
+                    if (outputFile.exists()) {
+                        println 'Run Tests with "gradle test"\n'
+                    }
+                }
+            }
+        }
+    }
+}
+
+task test << {
+    def testName = 'test'
+    def binDir = project.buildDir.getAbsolutePath() + '/binaries/testExecutable/'
+    def releaseTest = new File(binDir + 'release/' + testName)
+    def debugTest = new File(binDir + 'debug/' + testName)
+    if (releaseTest.exists()) {
+        def proc = releaseTest.getAbsolutePath().execute()
+        println "Running Release Build Tests...\n${proc.text}"
+    } else if (debugTest.exists()) {
+        def proc = debugTest.getAbsolutePath().execute()
+        println "Running Debug Build Tests...\n${proc.text}"
+    } else {
+        println "You need to build a test executable first!\n"
+    }
+}
+
+task wrapper (type: Wrapper) {
+    gradleVersion = '2.2'
+}
