@@ -25,12 +25,12 @@ namespace SDNB
             /* constructor(s) &  destructor(s) */
             GapVector(size_t size = DEFAULT_VECTOR_LENGTH) : __gapBegin(0), __gapEnd(size)
             {
-                __data = vector<T>(size);
+                __data = new vector<T>(size);
             };
 
             GapVector(const GapVector& arg) : __gapBegin(arg.__gapBegin), __gapEnd(arg.__gapEnd)
             {
-                __data = vector<T>(arg.__data);
+                __data = new vector<T>(arg.__data);
             };
 
             /* operators */
@@ -66,7 +66,7 @@ namespace SDNB
                 if (index >= __gapBegin && index < __gapEnd) {
                     index += (__gapEnd - __gapBegin);
                 }
-                return __data[index];
+                return __data->operator[](index);
             };
 
             const T&
@@ -85,9 +85,8 @@ namespace SDNB
                     __grow(length);
                 }
                 /* copy */
-                while (first != last) {
-                    __data[__gapBegin++] = *(first++);
-                }
+                copy(first, last, __data->begin() + __gapBegin);
+                __gapBegin += last - first;
                 size  += length;
             };
 
@@ -103,6 +102,10 @@ namespace SDNB
                     __gapEnd += length;
                     size -= length;
                 }
+
+                if (__gapEnd - __gapBegin >= size << 1) {
+                    __shrink();
+                }
             };
 
             void
@@ -111,19 +114,21 @@ namespace SDNB
                 if (distance < 0) {
                     distance = max(distance, -(int)(__gapBegin));
                     size_t stopIndex = __gapBegin + distance;
-                    /* copy_backward */
-                    while (__gapBegin != stopIndex) {
-                        __data[--__gapEnd] = __data[--__gapBegin];
-                    }
+                    copy_backward(  __data->begin() + __gapBegin + distance, \
+                                    __data->begin() + __gapBegin, \
+                                    __data->begin() + __gapEnd);
                 } else if (distance > 0) {
                     distance = min(distance, (int)__gapBegin);
                     size_t stopIndex = __gapEnd + distance;
-                    /* copy */
-                    while (__gapEnd != stopIndex) {
-                        __data[__gapBegin++] = __data[__gapEnd++];
-                    }
+                    copy(   __data->begin() + __gapEnd, \
+                            __data->begin() + __gapEnd + distance, \
+                            __data->begin() + __gapBegin);
                 }
+
+                __gapBegin += distance;
+                __gapEnd += distance;
             };
+
 
             /* nested classes */
             class iterator;
@@ -213,7 +218,7 @@ namespace SDNB
                     };
 
                     friend int operator-(iterator lhs, const iterator& rhs) { return (int)lhs.__index - (int)rhs.__index; };
-                    inline T& operator*(void) { return __parent->__data[__index]; };
+                    inline T& operator*(void) { return __parent->__data->operator[](__index); };
                     inline bool operator==(const iterator& rhs) { return __index == rhs.__index; };
                     inline bool operator!=(const iterator& rhs) { return __index != rhs.__index; };
                     inline bool operator<(const iterator& rhs) { return __index < rhs.__index; };
@@ -288,35 +293,30 @@ namespace SDNB
 
         private:
             /* data members */
-            vector<T> __data;
+            vector<T>* __data;
             size_t __gapBegin;
             size_t __gapEnd;
 
             /* member functions */
             void __grow(size_t insertLength)
             {
-                size_t vectorLength = __data.size();
-                size_t backVectorLength = __gapBegin;
-                size_t frontVectorLength = __data.size() - __gapEnd;
+                size_t frontVectorLength = __data->size() - __gapEnd;
                 size_t newGapLength = DEFAULT_VECTOR_LENGTH;
                 if (size + insertLength > (DEFAULT_VECTOR_LENGTH << 1)) {
                     newGapLength = (size + insertLength) >> 1;
                 }
-                __data.resize(size + insertLength + newGapLength);
-                __gapBegin = backVectorLength;
-                __gapEnd = vectorLength - frontVectorLength;
+                __data->resize(size + insertLength + newGapLength);
 
-                typename std::vector<T>::iterator tempGapEnd = __data.end() - frontVectorLength;
-                copy(gap(), gap() + frontVectorLength, tempGapEnd); /* need to change this */
-                __gapEnd = __data.size() - frontVectorLength;
-                return;
+                copy_backward(  __data->begin() + __gapEnd, \
+                                __data->begin() + __gapEnd + frontVectorLength, \
+                                __data->end());
+                __gapEnd = size + insertLength + newGapLength - frontVectorLength;
             };
 
             void __shrink(void)
             {
-                size_t vectorLength = __data.size();
-                size_t backVectorLength = __gapBegin;
-                size_t frontVectorLength = __data.size() - __gapEnd;
+                size_t vectorLength = __data->size();
+                size_t frontVectorLength = __data->size() - __gapEnd;
                 size_t newGapLength = DEFAULT_VECTOR_LENGTH;
                 if (size > (DEFAULT_VECTOR_LENGTH << 1)) {
                     newGapLength = (size >> 1);
@@ -328,13 +328,11 @@ namespace SDNB
                     exit(EXIT_FAILURE);
                 }
 
-                copy(gap(), gap() + frontVectorLength, frontVector->begin());
-                __data.resize(size + newGapLength);
-                __gapBegin = backVectorLength;
-                __gapEnd = __data.size() - frontVectorLength;
-                copy(frontVector->begin(), frontVector->begin() + frontVectorLength, gap()); /* need to change this */
-                delete frontVector;
-                return;
+                copy(   __data->begin(), \
+                        __data->begin() + frontVectorLength, \
+                        frontVector->begin());
+                __data->resize(size + newGapLength);
+                __gapEnd = size + newGapLength - frontVectorLength;
             };
     };
 }

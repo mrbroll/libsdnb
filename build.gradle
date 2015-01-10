@@ -45,6 +45,7 @@ executables {
     test {
         binaries.all {
             lib library: 'gtest', linkage: 'static'
+            linker.args '-pthread'
             tasks.withType(CppCompile) {
                 dependsOn depGtest
             }

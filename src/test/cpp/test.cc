@@ -71,6 +71,17 @@ namespace {
         const char *testString1 = "this is a test mac daddy strizzing";
         ASSERT_STREQ(testString1, string(gb0->begin(), gb0->end()).c_str());
     }
+
+    TEST_F(GapBufferTest, GrowShrinkTest)
+    {
+        string* testStr0 = new string("this is a test string");
+        string* inStr0 = new string(1000, 'x');
+        gb0->insert(inStr0->begin(), inStr0->end());
+        //testStr0->append(*inStr0);
+        ASSERT_STREQ(testStr0->c_str(), string(gb0->begin(), gb0->end()).c_str());
+        delete testStr0;
+        //delete inStr0;
+    }
 }
 
 int main(int argc, char **argv)
