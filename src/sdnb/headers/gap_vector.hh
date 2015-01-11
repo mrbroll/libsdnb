@@ -9,8 +9,6 @@
 #ifndef SDNB_GAP_VECTOR_HH_
 #define SDNB_GAP_VECTOR_HH_
 
-#define DEFAULT_VECTOR_LENGTH 128
-
 using namespace std;
 
 namespace SDNB
@@ -23,7 +21,7 @@ namespace SDNB
             size_t size;
 
             /* constructor(s) &  destructor(s) */
-            GapVector(size_t size = DEFAULT_VECTOR_LENGTH) : size(0), \
+            GapVector(size_t size = 128) : size(0), \
                                                              __gapBegin(0), \
                                                              __gapEnd(size)
             {
@@ -107,10 +105,7 @@ namespace SDNB
                     __gapEnd += length;
                     size -= length;
                 }
-
-                if (__gapSize() >= (__data->size() / 2) && __data->size() > (2 * DEFAULT_VECTOR_LENGTH)) {
-                    __shrink();
-                }
+                __shrink();
             };
 
             void
@@ -380,6 +375,9 @@ namespace SDNB
                 return iterator(this) - (__gapBegin - 1);
             };
 
+        protected:
+            const size_t defaultGapSize = 128;
+
         private:
             /* data members */
             vector<T>* __data;
@@ -398,8 +396,8 @@ namespace SDNB
             __grow(size_t insertSize)
             {
                 size_t frontVectorSize = __data->size() - __gapEnd;
-                size_t newGapSize = DEFAULT_VECTOR_LENGTH;
-                if (size + insertSize > (DEFAULT_VECTOR_LENGTH << 1)) {
+                size_t newGapSize = defaultGapSize;
+                if (size + insertSize > (defaultGapSize << 1)) {
                     newGapSize = (size + insertSize) >> 1;
                 }
                 __data->resize(size + insertSize + newGapSize);
@@ -413,24 +411,22 @@ namespace SDNB
             void
             __shrink(void)
             {
-                size_t vectorSize = __data->size();
-                size_t frontVectorSize = __data->size() - __gapEnd;
-                size_t newGapSize = DEFAULT_VECTOR_LENGTH;
-                if (size > (DEFAULT_VECTOR_LENGTH)) {
-                    newGapSize = size;
-                }
+                if (__gapSize() > (size / 2) && size > 2 * defaultGapSize) {
+                    size_t vectorSize = __data->size();
+                    size_t frontVectorSize = __data->size() - __gapEnd;
+                    size_t newGapSize = defaultGapSize;
+                    vector<T>* frontVector = new vector<T>(frontVectorSize);
+                    if (frontVector == NULL) {
+                        cerr << "ERROR: new failed" << endl;
+                        exit(EXIT_FAILURE);
+                    }
 
-                vector<T>* frontVector = new vector<T>(frontVectorSize);
-                if (frontVector == NULL) {
-                    cerr << "ERROR: new failed" << endl;
-                    exit(EXIT_FAILURE);
+                    copy(   __data->begin(), \
+                            __data->begin() + frontVectorSize, \
+                            frontVector->begin());
+                    __data->resize(size + newGapSize);
+                    __gapEnd = size + newGapSize - frontVectorSize;
                 }
-
-                copy(   __data->begin(), \
-                        __data->begin() + frontVectorSize, \
-                        frontVector->begin());
-                __data->resize(size + newGapSize);
-                __gapEnd = size + newGapSize - frontVectorSize;
             };
     };
 }
