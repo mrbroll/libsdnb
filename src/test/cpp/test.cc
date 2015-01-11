@@ -81,6 +81,11 @@ namespace {
         ASSERT_STREQ(testStr0->c_str(), string(gb0->begin(), gb0->end()).c_str());
         delete testStr0;
         delete inStr0;
+        gb0->moveGap(-1000);
+        gb0->remove(1000);
+        gb0->moveGap(-21);
+        gb0->remove(15);
+        ASSERT_STREQ("string", string(gb0->begin(), gb0->end()).c_str());
     }
 }
 
