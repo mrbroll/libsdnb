@@ -23,12 +23,16 @@ namespace SDNB
             size_t size;
 
             /* constructor(s) &  destructor(s) */
-            GapVector(size_t size = DEFAULT_VECTOR_LENGTH) : __gapBegin(0), __gapEnd(size)
+            GapVector(size_t size = DEFAULT_VECTOR_LENGTH) : size(0), \
+                                                             __gapBegin(0), \
+                                                             __gapEnd(size)
             {
                 __data = new vector<T>(size);
             };
 
-            GapVector(const GapVector& arg) : __gapBegin(arg.__gapBegin), __gapEnd(arg.__gapEnd)
+            GapVector(const GapVector& arg) : size(arg.size), \
+                                              __gapBegin(arg.__gapBegin), \
+                                              __gapEnd(arg.__gapEnd)
             {
                 __data = new vector<T>(arg.__data);
             };
@@ -40,6 +44,7 @@ namespace SDNB
                 if (__data != NULL) {
                     delete __data;
                 }
+                size = arg.size;
                 __data = new vector<T>(arg.__data);
                 __gapBegin = arg.__gapBegin;
                 __gapEnd = arg.__gapEnd;
@@ -52,8 +57,8 @@ namespace SDNB
                 if (__data != NULL) {
                     delete __data;
                 }
-                __data = new vector<T>(arg.__data);
                 size = arg.size;
+                __data = new vector<T>(arg.__data);
                 __gapBegin = arg.__gapBegin;
                 __gapEnd = arg.__gapEnd;
                 return *this;
@@ -103,7 +108,7 @@ namespace SDNB
                     size -= length;
                 }
 
-                if (__gapEnd - __gapBegin >= size << 1) {
+                if (__gapEnd - __gapBegin >= size << 1 && size > DEFAULT_VECTOR_LENGTH << 1) {
                     __shrink();
                 }
             };
@@ -113,13 +118,11 @@ namespace SDNB
             {
                 if (distance < 0) {
                     distance = max(distance, -(int)(__gapBegin));
-                    size_t stopIndex = __gapBegin + distance;
                     copy_backward(  __data->begin() + __gapBegin + distance, \
                                     __data->begin() + __gapBegin, \
                                     __data->begin() + __gapEnd);
                 } else if (distance > 0) {
                     distance = min(distance, (int)__gapBegin);
-                    size_t stopIndex = __gapEnd + distance;
                     copy(   __data->begin() + __gapEnd, \
                             __data->begin() + __gapEnd + distance, \
                             __data->begin() + __gapBegin);
@@ -129,8 +132,7 @@ namespace SDNB
                 __gapEnd += distance;
             };
 
-
-            /* nested classes */
+            /* nested classe(s) */
             class iterator;
             friend class iterator;
             class iterator : public std::iterator<random_access_iterator_tag, T>
@@ -149,7 +151,8 @@ namespace SDNB
                         return *this;
                     };
 
-                    iterator& operator++(void)
+                    iterator&
+                    operator++(void)
                     {
                         __index++;
                         if (__index == __parent->__gapBegin) {
@@ -158,32 +161,39 @@ namespace SDNB
                         return *this;
                     };
 
-                    iterator operator++(int)
+                    iterator
+                    operator++(int)
                     {
-                        iterator tmp = iterator(*this);
+                        iterator tmp(*this);
                         operator++();
                         return tmp;
                     };
 
-                    iterator& operator+=(int offset)
+                    iterator&
+                    operator+=(int offset)
                     {
                         calcOffset(__index + offset);
                         return *this;
                     };
 
-                    friend iterator operator+(iterator it, int offset)
+                    friend
+                    iterator
+                    operator+(iterator it, int offset)
                     {
                         it.calcOffset(it.__index + offset);
                         return it;
                     };
 
-                    friend iterator operator+(int offset, const iterator& it)
+                    friend
+                    iterator
+                    operator+(int offset, const iterator& it)
                     {
                         it.calcOffset(it.__index + offset);
                         return it;
                     };
 
-                    iterator& operator--(void)
+                    iterator&
+                    operator--(void)
                     {
                         __index--;
                         if (__index == __parent->__gapEnd - 1) {
@@ -192,46 +202,107 @@ namespace SDNB
                         return *this;
                     };
 
-                    iterator operator--(int)
+                    iterator
+                    operator--(int)
                     {
-                        iterator tmp = iterator(*this);
+                        iterator tmp(*this);
                         operator--();
                         return tmp;
                     };
 
-                    iterator& operator-=(int offset)
+                    iterator&
+                    operator-=(int offset)
                     {
                         calcOffset(__index = offset);
                         return *this;
                     };
 
-                    friend iterator operator-(iterator it, int offset)
+                    friend
+                    iterator
+                    operator-(iterator it, int offset)
                     {
                         it.calcOffset(it.__index - offset);
                         return it;
                     };
 
-                    friend iterator operator-(int offset, const iterator& it)
+                    friend
+                    iterator
+                    operator-(int offset, const iterator& it)
                     {
                         it.calcOffset(it.__index - offset);
                         return it;
                     };
 
-                    friend int operator-(iterator lhs, const iterator& rhs) { return (int)lhs.__index - (int)rhs.__index; };
-                    inline T& operator*(void) { return __parent->__data->operator[](__index); };
-                    inline bool operator==(const iterator& rhs) { return __index == rhs.__index; };
-                    inline bool operator!=(const iterator& rhs) { return __index != rhs.__index; };
-                    inline bool operator<(const iterator& rhs) { return __index < rhs.__index; };
-                    inline bool operator>(const iterator& rhs) { return __index > rhs.__index; };
-                    inline bool operator<=(const iterator& rhs) { return __index <= rhs.__index; };
-                    inline bool operator>=(const iterator& rhs) { return __index >= rhs.__index; };
+                    friend
+                    int
+                    operator-(iterator lhs, const iterator& rhs)
+                    { 
+                        return (int)lhs.__index - (int)rhs.__index;
+                    };
 
-                    inline T& operator[](size_t offset)
+                    inline
+                    T&
+                    operator*(void)
+                    {
+                        return __parent->__data->operator[](__index);
+                    };
+
+                    inline
+                    bool
+                    operator==(const iterator& rhs)
+                    {
+                        return __index == rhs.__index;
+                    };
+
+                    inline
+                    bool
+                    operator!=(const iterator& rhs)
+                    { 
+                        return __index != rhs.__index;
+                    };
+
+                    inline
+                    bool
+                    operator<(const iterator& rhs)
+                    {
+                        return __index < rhs.__index;
+                    };
+
+                    inline
+                    bool
+                    operator>(const iterator& rhs)
+                    {
+                        return __index > rhs.__index;
+                    };
+
+                    inline
+                    bool
+                    operator<=(const iterator& rhs)
+                    {
+                        return __index <= rhs.__index;
+                    };
+
+                    inline
+                    bool
+                    operator>=(const iterator& rhs)
+                    {
+                        return __index >= rhs.__index;
+                    };
+
+                    inline
+                    T&
+                    operator[](size_t offset)
                     {
                         return __parent->operator[](__index + offset);
                     };
 
-                    inline const T& operator[](size_t offset) const { return const_cast<T&>(*this)[offset]; };
+                    inline
+                    const T&
+                    operator[](size_t offset) const
+                    {
+                        return const_cast<T&>(*this)[offset];
+                    };
+
                 private:
                     /* data members */
                     GapVector<T>* __parent;
@@ -264,13 +335,13 @@ namespace SDNB
             reverse_iterator
             rbegin(void)
             {
-                return reverse_iterator(this) - (size - 1);
+                return reverse_iterator(this) - (__data->size() - 1);
             };
 
             iterator
             end(void)
             {
-                return iterator(this) + size;
+                return iterator(this) + __data->size();
             };
 
             reverse_iterator

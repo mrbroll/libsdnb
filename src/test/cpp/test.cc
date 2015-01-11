@@ -50,6 +50,7 @@ namespace {
         string inStr0 = "dude.";
         gb0->insert(inStr0.begin(), inStr0.end());
         const char *testString0 = "this is a test dude.";
+        cout << "iterator diff: " << gb0->end() - gb0->end() << endl;
         ASSERT_STREQ(testString0, string(gb0->begin(), gb0->end()).c_str());
         gb1->remove(-1);
         string inStr1 = "g. And this is some more.";
@@ -77,10 +78,10 @@ namespace {
         string* testStr0 = new string("this is a test string");
         string* inStr0 = new string(1000, 'x');
         gb0->insert(inStr0->begin(), inStr0->end());
-        //testStr0->append(*inStr0);
+        testStr0->append(*inStr0);
         ASSERT_STREQ(testStr0->c_str(), string(gb0->begin(), gb0->end()).c_str());
         delete testStr0;
-        //delete inStr0;
+        delete inStr0;
     }
 }
 
