@@ -46,11 +46,10 @@ namespace {
 
     TEST_F(GapBufferTest, RemoveTest)
     {
-        gb0->remove(-6);
-        string inStr0 = "dude.";
+        gb0->remove(-11);
+        string inStr0 = "test dude.";
         gb0->insert(inStr0.begin(), inStr0.end());
         const char *testString0 = "this is a test dude.";
-        cout << "iterator diff: " << gb0->end() - gb0->end() << endl;
         ASSERT_STREQ(testString0, string(gb0->begin(), gb0->end()).c_str());
         gb1->remove(-1);
         string inStr1 = "g. And this is some more.";

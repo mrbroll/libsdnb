@@ -172,7 +172,7 @@ namespace SDNB
                     iterator&
                     operator+=(int offset)
                     {
-                        calcOffset(__index + offset);
+                        __index = getNewIndex(__index + offset);
                         return *this;
                     };
 
@@ -180,7 +180,7 @@ namespace SDNB
                     iterator
                     operator+(iterator it, int offset)
                     {
-                        it.calcOffset(it.__index + offset);
+                        it.__index = it.getNewIndex(it.__index + offset);
                         return it;
                     };
 
@@ -188,7 +188,7 @@ namespace SDNB
                     iterator
                     operator+(int offset, const iterator& it)
                     {
-                        it.calcOffset(it.__index + offset);
+                        size_t index = it.getNewIndex(it.__index + offset);
                         return it;
                     };
 
@@ -213,7 +213,7 @@ namespace SDNB
                     iterator&
                     operator-=(int offset)
                     {
-                        calcOffset(__index = offset);
+                        __index = getNewIndex(__index = offset);
                         return *this;
                     };
 
@@ -221,7 +221,7 @@ namespace SDNB
                     iterator
                     operator-(iterator it, int offset)
                     {
-                        it.calcOffset(it.__index - offset);
+                        it.__index = it.getNewIndex(it.__index - offset);
                         return it;
                     };
 
@@ -229,15 +229,19 @@ namespace SDNB
                     iterator
                     operator-(int offset, const iterator& it)
                     {
-                        it.calcOffset(it.__index - offset);
-                        return it;
+                        size_t index = it.getNewIndex(it.__index - offset);
+                        iterator diffIt(it);
+                        diffIt.__index = index;
+                        return diffIt;
                     };
 
                     friend
                     int
                     operator-(iterator lhs, const iterator& rhs)
-                    { 
-                        return (int)lhs.__index - (int)rhs.__index;
+                    {
+                        size_t leftIndex = lhs.outputIndex();
+                        size_t rightIndex = rhs.outputIndex();
+                        return (int)leftIndex - (int)rightIndex;
                     };
 
                     inline
@@ -293,7 +297,8 @@ namespace SDNB
                     T&
                     operator[](size_t offset)
                     {
-                        return __parent->operator[](__index + offset);
+                        index = getNewIndex(__index + offset);
+                        return __parent->operator[](index);
                     };
 
                     inline
@@ -309,7 +314,9 @@ namespace SDNB
                     size_t __index;
 
                     /* member functions */
-                    inline void calcOffset(size_t newIndex)
+                    inline
+                    size_t
+                    getNewIndex(size_t newIndex) const
                     {
                         if (__index < __parent->__gapBegin && \
                             newIndex >= __parent->__gapBegin) {
@@ -318,8 +325,19 @@ namespace SDNB
                                     newIndex < __parent->__gapEnd) {
                             newIndex -= (__parent->__gapEnd - __parent->__gapBegin);
                         }
-                        __index = newIndex;
+                        return newIndex;
                     }
+
+                    inline
+                    size_t
+                    outputIndex(void) const
+                    {
+                        size_t newIndex = __index;
+                        if (__index > __parent->__gapBegin) {
+                            newIndex -= (__parent->__gapEnd - __parent->__gapBegin);
+                        }
+                        return newIndex;
+                    };
             };
 
             using const_iterator = const iterator;
@@ -335,13 +353,13 @@ namespace SDNB
             reverse_iterator
             rbegin(void)
             {
-                return reverse_iterator(this) - (__data->size() - 1);
+                return reverse_iterator(this) - (size - 1);
             };
 
             iterator
             end(void)
             {
-                return iterator(this) + __data->size();
+                return iterator(this) + size;
             };
 
             reverse_iterator
