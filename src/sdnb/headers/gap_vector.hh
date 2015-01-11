@@ -135,7 +135,14 @@ namespace SDNB
                 public:
                     /* constructor(s) & destructor(s) */
                     iterator(void) : __index(0), __parent(NULL) {};
-                    iterator(GapVector<T>* arg) : __index(0), __parent(arg) {};
+                    iterator(GapVector<T>* arg) : __parent(arg)
+                    {
+                        if (__parent->__gapBegin == 0) {
+                            __index = __parent->__gapEnd;
+                        } else {
+                            __index = 0;
+                        }
+                    };
 
                     /* operators */
                     iterator&
