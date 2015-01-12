@@ -10,5 +10,7 @@ __Data structures included:__
 So far, you don't need to build this library, just include the header file you need in your code.
 
 To run tests, cd to the root of the project and run:
-    ./gradlew debugtestexecutable
-    ./gradlew test
+```
+./gradlew debugtestexecutable
+./gradlew test
+```
