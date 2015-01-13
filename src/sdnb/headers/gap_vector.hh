@@ -32,7 +32,7 @@ namespace SDNB
                                               __gapBegin(arg.__gapBegin), \
                                               __gapEnd(arg.__gapEnd)
             {
-                __data = new vector<T>(arg.__data);
+                __data = new vector<T>(*(arg.__data));
             };
 
             /* operators */
@@ -93,7 +93,7 @@ namespace SDNB
                 size  += length;
             };
 
-            void
+            int
             remove(int length)
             {
                 if (length < 0) {
@@ -106,9 +106,10 @@ namespace SDNB
                     size -= length;
                 }
                 __shrink();
+                return length;
             };
 
-            void
+            int
             moveGap(int distance)
             {
                 if (distance < 0) {
@@ -125,6 +126,7 @@ namespace SDNB
 
                 __gapBegin += distance;
                 __gapEnd += distance;
+                return distance;
             };
 
             /* nested classe(s) */
@@ -299,8 +301,8 @@ namespace SDNB
                     T&
                     operator[](size_t offset)
                     {
-                        index = getNewIndex(__index + offset);
-                        return __parent->operator[](index);
+                        __index = getNewIndex(__index + offset);
+                        return __parent->operator[](__index);
                     };
 
                     inline
