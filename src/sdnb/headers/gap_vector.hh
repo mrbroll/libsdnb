@@ -122,7 +122,7 @@ namespace SDNB
                                     __data->begin() + __gapBegin, \
                                     __data->begin() + __gapEnd);
                 } else if (distance > 0) {
-                    distance = min(distance, (int)__gapBegin);
+                    distance = min(distance, (int)size - (int)__gapEnd);
                     copy(   __data->begin() + __gapEnd, \
                             __data->begin() + __gapEnd + distance, \
                             __data->begin() + __gapBegin);
