@@ -192,7 +192,7 @@ namespace SDNB
                     iterator
                     operator+(int offset, const iterator& it)
                     {
-                        size_t index = it.getNewIndex(it.__index + offset);
+                        it.getNewIndex(it.__index + offset);
                         return it;
                     };
 
@@ -421,7 +421,6 @@ namespace SDNB
             __shrink(void)
             {
                 if (__gapSize() > (size / 2) && size > 2 * defaultGapSize) {
-                    size_t vectorSize = __data->size();
                     size_t frontVectorSize = __data->size() - __gapEnd;
                     size_t newGapSize = defaultGapSize;
                     vector<T>* frontVector = new vector<T>(frontVectorSize);
