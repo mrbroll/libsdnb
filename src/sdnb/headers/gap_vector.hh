@@ -22,13 +22,15 @@ namespace SDNB
 
             /* constructor(s) &  destructor(s) */
             GapVector(size_t size = 128) : size(0), \
-                                                             __gapBegin(0), \
-                                                             __gapEnd(size)
+                                           _defaultGapSize(128), \
+                                           __gapBegin(0), \
+                                           __gapEnd(size)
             {
                 __data = new vector<T>(size);
             };
 
             GapVector(const GapVector& arg) : size(arg.size), \
+                                              _defaultGapSize(128), \
                                               __gapBegin(arg.__gapBegin), \
                                               __gapEnd(arg.__gapEnd)
             {
@@ -118,7 +120,7 @@ namespace SDNB
                                     __data->begin() + __gapBegin, \
                                     __data->begin() + __gapEnd);
                 } else if (distance > 0) {
-                    distance = min(distance, (int)__gapBegin);
+                    distance = min(distance, (int)__data->size() - (int)__gapBegin);
                     copy(   __data->begin() + __gapEnd, \
                             __data->begin() + __gapEnd + distance, \
                             __data->begin() + __gapBegin);
@@ -176,7 +178,7 @@ namespace SDNB
                     iterator&
                     operator+=(int offset)
                     {
-                        __index = getNewIndex(__index + offset);
+                        __index = __getNewIndex(__index + offset);
                         return *this;
                     };
 
@@ -184,7 +186,7 @@ namespace SDNB
                     iterator
                     operator+(iterator it, int offset)
                     {
-                        it.__index = it.getNewIndex(it.__index + offset);
+                        it.__index = it.__getNewIndex(it.__index + offset);
                         return it;
                     };
 
@@ -192,7 +194,7 @@ namespace SDNB
                     iterator
                     operator+(int offset, const iterator& it)
                     {
-                        size_t index = it.getNewIndex(it.__index + offset);
+                        it.__getNewIndex(it.__index + offset);
                         return it;
                     };
 
@@ -217,7 +219,7 @@ namespace SDNB
                     iterator&
                     operator-=(int offset)
                     {
-                        __index = getNewIndex(__index = offset);
+                        __index = __getNewIndex(__index = offset);
                         return *this;
                     };
 
@@ -225,7 +227,7 @@ namespace SDNB
                     iterator
                     operator-(iterator it, int offset)
                     {
-                        it.__index = it.getNewIndex(it.__index - offset);
+                        it.__index = it.__getNewIndex(it.__index - offset);
                         return it;
                     };
 
@@ -233,7 +235,7 @@ namespace SDNB
                     iterator
                     operator-(int offset, const iterator& it)
                     {
-                        size_t index = it.getNewIndex(it.__index - offset);
+                        size_t index = it.__getNewIndex(it.__index - offset);
                         iterator diffIt(it);
                         diffIt.__index = index;
                         return diffIt;
@@ -243,8 +245,8 @@ namespace SDNB
                     int
                     operator-(iterator lhs, const iterator& rhs)
                     {
-                        size_t leftIndex = lhs.outputIndex();
-                        size_t rightIndex = rhs.outputIndex();
+                        size_t leftIndex = lhs.__outputIndex();
+                        size_t rightIndex = rhs.__outputIndex();
                         return (int)leftIndex - (int)rightIndex;
                     };
 
@@ -301,7 +303,7 @@ namespace SDNB
                     T&
                     operator[](size_t offset)
                     {
-                        __index = getNewIndex(__index + offset);
+                        __index = __getNewIndex(__index + offset);
                         return __parent->operator[](__index);
                     };
 
@@ -320,7 +322,7 @@ namespace SDNB
                     /* member functions */
                     inline
                     size_t
-                    getNewIndex(size_t newIndex) const
+                    __getNewIndex(size_t newIndex) const
                     {
                         if (__index < __parent->__gapBegin && \
                             newIndex >= __parent->__gapBegin) {
@@ -334,7 +336,7 @@ namespace SDNB
 
                     inline
                     size_t
-                    outputIndex(void) const
+                    __outputIndex(void) const
                     {
                         size_t newIndex = __index;
                         if (__index > __parent->__gapBegin) {
@@ -344,9 +346,9 @@ namespace SDNB
                     };
             };
 
-            using const_iterator = const iterator;
-            using reverse_iterator = std::reverse_iterator<iterator>;
-            using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+            typedef const iterator const_iterator;
+            typedef std::reverse_iterator<iterator> reverse_iterator;
+            typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
             /* member functions that return nested types */
             iterator
             begin(void)
@@ -385,7 +387,7 @@ namespace SDNB
             };
 
         protected:
-            const size_t defaultGapSize = 128;
+            const size_t _defaultGapSize;
 
         private:
             /* data members */
@@ -405,8 +407,8 @@ namespace SDNB
             __grow(size_t insertSize)
             {
                 size_t frontVectorSize = __data->size() - __gapEnd;
-                size_t newGapSize = defaultGapSize;
-                if (size + insertSize > (defaultGapSize << 1)) {
+                size_t newGapSize = _defaultGapSize;
+                if (size + insertSize > (_defaultGapSize << 1)) {
                     newGapSize = (size + insertSize) >> 1;
                 }
                 __data->resize(size + insertSize + newGapSize);
@@ -420,10 +422,9 @@ namespace SDNB
             void
             __shrink(void)
             {
-                if (__gapSize() > (size / 2) && size > 2 * defaultGapSize) {
-                    size_t vectorSize = __data->size();
+                if (__gapSize() > (size / 2) && size > 2 * _defaultGapSize) {
                     size_t frontVectorSize = __data->size() - __gapEnd;
-                    size_t newGapSize = defaultGapSize;
+                    size_t newGapSize = _defaultGapSize;
                     vector<T>* frontVector = new vector<T>(frontVectorSize);
                     if (frontVector == NULL) {
                         cerr << "ERROR: new failed" << endl;
