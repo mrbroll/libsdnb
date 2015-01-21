@@ -8,10 +8,10 @@ using namespace SDNB;
 
 namespace {
 
-    class GapBufferTest : public ::testing::Test
+    class GapVectorTest : public ::testing::Test
     {
         protected:
-            GapBufferTest()
+            GapVectorTest()
             {
                 gb0 = new GapVector<char>();
                 gb1 = new GapVector<char>();
@@ -20,7 +20,7 @@ namespace {
                 gb1->insert(testString.begin(), testString.end());
             }
 
-            ~GapBufferTest()
+            ~GapVectorTest()
             {
                 delete gb0;
                 delete gb1;
@@ -30,7 +30,7 @@ namespace {
             GapVector<char>* gb1;
     };
 
-    TEST_F(GapBufferTest, InsertTest)
+    TEST_F(GapVectorTest, InsertTest)
     {
         string testStr0 = "this is a test string";
         ASSERT_STREQ(testStr0.c_str(), string(gb0->begin(), gb0->end()).c_str());
@@ -44,7 +44,7 @@ namespace {
         ASSERT_STREQ(testStr2.c_str(), string(gb1->begin(), gb1->end()).c_str());
     }
 
-    TEST_F(GapBufferTest, RemoveTest)
+    TEST_F(GapVectorTest, RemoveTest)
     {
         gb0->remove(-11);
         string inStr0 = "test dude.";
@@ -58,7 +58,7 @@ namespace {
         ASSERT_STREQ(testString1, string(gb1->begin(), gb1->end()).c_str());
     }
 
-    TEST_F(GapBufferTest, MoveGapTest)
+    TEST_F(GapVectorTest, MoveGapTest)
     {
         gb0->moveGap(-6);
         string inStr0 = "mac daddy ";
@@ -72,7 +72,7 @@ namespace {
         ASSERT_STREQ(testString1, string(gb0->begin(), gb0->end()).c_str());
     }
 
-    TEST_F(GapBufferTest, GrowShrinkTest)
+    TEST_F(GapVectorTest, GrowShrinkTest)
     {
         string* testStr0 = new string("this is a test string");
         string* inStr0 = new string(1000, 'x');
