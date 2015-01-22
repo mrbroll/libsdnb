@@ -1,0 +1,106 @@
+\hypertarget{classSDNB_1_1GapVector}{}\section{S\+D\+N\+B\+:\+:Gap\+Vector$<$ T $>$ Class Template Reference}
+\label{classSDNB_1_1GapVector}\index{S\+D\+N\+B\+::\+Gap\+Vector$<$ T $>$@{S\+D\+N\+B\+::\+Gap\+Vector$<$ T $>$}}
+
+
+\hyperlink{classSDNB_1_1GapVector}{Gap\+Vector} class.  
+
+
+
+
+{\ttfamily \#include $<$gap\+\_\+vector.\+hh$>$}
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classSDNB_1_1GapVector_1_1iterator}{iterator}
+\end{DoxyCompactItemize}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classSDNB_1_1GapVector_a5f7b534c044fec7f25fa430c88fd167e}{}typedef const \hyperlink{classSDNB_1_1GapVector_1_1iterator}{iterator} {\bfseries const\+\_\+iterator}\label{classSDNB_1_1GapVector_a5f7b534c044fec7f25fa430c88fd167e}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_aa2476e7a8104ca8d5b61f7873b76a18e}{}typedef std\+::reverse\+\_\+iterator$<$ \hyperlink{classSDNB_1_1GapVector_1_1iterator}{iterator} $>$ {\bfseries reverse\+\_\+iterator}\label{classSDNB_1_1GapVector_aa2476e7a8104ca8d5b61f7873b76a18e}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_a37c5f4d092df95a05852a9d3014e9bf4}{}typedef std\+::reverse\+\_\+iterator$<$ \hyperlink{classSDNB_1_1GapVector_1_1iterator}{const\+\_\+iterator} $>$ {\bfseries const\+\_\+reverse\+\_\+iterator}\label{classSDNB_1_1GapVector_a37c5f4d092df95a05852a9d3014e9bf4}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classSDNB_1_1GapVector_ae2017ba1405b81d73fa8db9a53fd475d}{}{\bfseries Gap\+Vector} (size\+\_\+t size=128)\label{classSDNB_1_1GapVector_ae2017ba1405b81d73fa8db9a53fd475d}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_adc12d325e3d9473e959ad57031a413ff}{}{\bfseries Gap\+Vector} (const \hyperlink{classSDNB_1_1GapVector}{Gap\+Vector} \&arg)\label{classSDNB_1_1GapVector_adc12d325e3d9473e959ad57031a413ff}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_a811a405824301979b0a2cb957834bb39}{}\hyperlink{classSDNB_1_1GapVector}{Gap\+Vector} \& {\bfseries operator=} (\hyperlink{classSDNB_1_1GapVector}{Gap\+Vector} arg)\label{classSDNB_1_1GapVector_a811a405824301979b0a2cb957834bb39}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_a7e3163451ad54ce89a80837b3bdc622d}{}\hyperlink{classSDNB_1_1GapVector}{Gap\+Vector} \& {\bfseries operator=} (const \hyperlink{classSDNB_1_1GapVector}{Gap\+Vector} \&arg)\label{classSDNB_1_1GapVector_a7e3163451ad54ce89a80837b3bdc622d}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_aef1d8380623e93dad6f49ec3dcf6ddfa}{}T \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (size\+\_\+t index)\label{classSDNB_1_1GapVector_aef1d8380623e93dad6f49ec3dcf6ddfa}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_aaf3510f16fa61ef5db2e8b9bb443c218}{}const T \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (size\+\_\+t index) const \label{classSDNB_1_1GapVector_aaf3510f16fa61ef5db2e8b9bb443c218}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_a45a4d64f4094416c853e906e89992a2d}{}{\footnotesize template$<$class iter $>$ }\\void {\bfseries insert} (iter first, iter last)\label{classSDNB_1_1GapVector_a45a4d64f4094416c853e906e89992a2d}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_a5165204380dc464053e3ee326e49b81f}{}int {\bfseries remove} (int length)\label{classSDNB_1_1GapVector_a5165204380dc464053e3ee326e49b81f}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_aac2ca857e4e2edc83734fe4314c21740}{}int {\bfseries move\+Gap} (int distance)\label{classSDNB_1_1GapVector_aac2ca857e4e2edc83734fe4314c21740}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_a3e9629fd65899c8861d9b8a3ee80e838}{}\hyperlink{classSDNB_1_1GapVector_1_1iterator}{iterator} {\bfseries begin} (void)\label{classSDNB_1_1GapVector_a3e9629fd65899c8861d9b8a3ee80e838}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_ad0dcea81f55ae8970e65e4778da37abb}{}reverse\+\_\+iterator {\bfseries rbegin} (void)\label{classSDNB_1_1GapVector_ad0dcea81f55ae8970e65e4778da37abb}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_a124b2683624fe7ad8a76d3b9b6027b7d}{}\hyperlink{classSDNB_1_1GapVector_1_1iterator}{iterator} {\bfseries end} (void)\label{classSDNB_1_1GapVector_a124b2683624fe7ad8a76d3b9b6027b7d}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_aba393fa2eb30e00623183c986c8fb0e9}{}reverse\+\_\+iterator {\bfseries rend} (void)\label{classSDNB_1_1GapVector_aba393fa2eb30e00623183c986c8fb0e9}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_a556e1db779dbe48ade40bd2040116b9c}{}\hyperlink{classSDNB_1_1GapVector_1_1iterator}{iterator} {\bfseries gap} (void)\label{classSDNB_1_1GapVector_a556e1db779dbe48ade40bd2040116b9c}
+
+\item 
+\hypertarget{classSDNB_1_1GapVector_a6cd2a4e619a689aac9a0132e7110de2b}{}reverse\+\_\+iterator {\bfseries rgap} (void)\label{classSDNB_1_1GapVector_a6cd2a4e619a689aac9a0132e7110de2b}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classSDNB_1_1GapVector_a0749dee549dbbf9dc3819ff74415ee82}{}size\+\_\+t {\bfseries size}\label{classSDNB_1_1GapVector_a0749dee549dbbf9dc3819ff74415ee82}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classSDNB_1_1GapVector_a279ce160457349d958452816dfa6d9cf}{}const size\+\_\+t {\bfseries \+\_\+default\+Gap\+Size}\label{classSDNB_1_1GapVector_a279ce160457349d958452816dfa6d9cf}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classSDNB_1_1GapVector_a67171474c4da6cc8efe0c7fafefd2b2d}{}class {\bfseries iterator}\label{classSDNB_1_1GapVector_a67171474c4da6cc8efe0c7fafefd2b2d}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$class S\+D\+N\+B\+::\+Gap\+Vector$<$ T $>$}
+
+\hyperlink{classSDNB_1_1GapVector}{Gap\+Vector} class. 
+
+The \hyperlink{classSDNB_1_1GapVector}{Gap\+Vector} Class is a templatized version of a gap buffer data structure. The class conforms to C++ S\+T\+L style and implements a random access iterator. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/sdnb/headers/gap\+\_\+vector.\+hh\end{DoxyCompactItemize}

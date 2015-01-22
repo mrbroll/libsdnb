@@ -11,8 +11,16 @@
 
 using namespace std;
 
+
 namespace SDNB
 {
+    /*! \brief GapVector class
+     *
+     * The GapVector Class is a templatized version of a gap buffer
+     * data structure. The class conforms to C++ STL style and implements
+     * a random access iterator.
+     *
+     */
     template <class T>
     class GapVector
     {
